@@ -2,7 +2,7 @@
 A simple script for gathering statistics about mods on modrinth
 ### Currently it gathers:
 - Total mod count
-- Percentage and number of mods supporting all of modrinth supported modloaders
+- Percentage and number of mods supporting all of modrinth's supported modloaders
 - Percentage and number of mods supporting 10 most recent minecraft versions
 
 ### Example output:
