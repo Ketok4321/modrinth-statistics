@@ -1,0 +1,14 @@
+{
+  "name": "modrinth-statistics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "author": "Ketok",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "node-fetch": "^3.2.6"
+  }
+}
