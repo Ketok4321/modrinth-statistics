@@ -3,7 +3,11 @@ import colors from "colors/safe.js";
 
 const apiBase = "https://api.modrinth.com";
 
+let requests = 0;
+let start, end;
+
 async function fetchJson(url) {
+    requests++;
     return await (await fetch(url)).json();
 }
 
@@ -72,8 +76,12 @@ async function gatherVersionStats() {
     return await countStats(versionFacets, false);
 }
 
+start = new Date();
 const [totalMods, loaderStats, versionStats] = await Promise.all([count([["project_type:mod"]]), gatherLoaderStats(), gatherVersionStats()]);
+end = new Date();
 
 simpleStat("Total mods", totalMods);
 tableStat("Modloaders", loaderStats);
 tableStat("Versions", versionStats);
+
+console.log(colors.gray(`Gathering statistics took ${(end - start) / 1000}s (${requests} requests)`));
