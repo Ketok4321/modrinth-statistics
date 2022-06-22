@@ -46,33 +46,34 @@ function tableStat(name, stats) {
     console.log();
 }
 
-const totalMods = await count([["project_type:mod"]]);
+async function gatherLoaderStats() {
+    const loaders = (await fetchJson(apiBase + "/v2/tag/loader"))
+        .map(loader => loader.name);
 
-// Loaders
-const loaders = (await fetchJson(apiBase + "/v2/tag/loader"))
-    .map(loader => loader.name);
+    const loaderFacets = loaders.map(loader => [loader, [
+        ["project_type:mod"],
+        [`categories:${loader}`]
+    ]]);
 
-const loaderFacets = loaders.map(loader => [loader, [
-    ["project_type:mod"],
-    [`categories:${loader}`]
-]]);
+    return await countStats(loaderFacets);
+}
 
-const loaderStats = await countStats(loaderFacets);
+async function gatherVersionStats() {
+    const versions = (await fetchJson(apiBase + "/v2/tag/game_version"))
+        .filter(version => version.version_type == "release")
+        .map(version => version.version)
+        .slice(0, 10);
 
-// Versions
-const versions = (await fetchJson(apiBase + "/v2/tag/game_version"))
-    .filter(version => version.version_type == "release")
-    .map(version => version.version)
-    .slice(0, 10);
+    const versionFacets = versions.map(version => [version, [
+        ["project_type:mod"],
+        [`versions:${version}`]
+    ]]);
 
-const versionFacets = versions.map(version => [version, [
-    ["project_type:mod"],
-    [`versions:${version}`]
-]]);
+    return await countStats(versionFacets, false);
+}
 
-const versionStats = await countStats(versionFacets, false);
+const [totalMods, loaderStats, versionStats] = await Promise.all([count([["project_type:mod"]]), gatherLoaderStats(), gatherVersionStats()]);
 
-// Printing stats to the console
 simpleStat("Total mods", totalMods);
 tableStat("Modloaders", loaderStats);
 tableStat("Versions", versionStats);
