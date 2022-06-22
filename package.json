@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.mjs",
   "scripts": {
-    "start": "node index.mjs"
+    "start": "node ."
   },
   "author": "Ketok",
   "dependencies": {
