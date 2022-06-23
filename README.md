@@ -22,7 +22,7 @@ git clone https://github.com/Ketok4321/modrinth-statistics/ && cd modrinth-stati
 ```
 npm ci
 ```
-4. Run the script
+3. Run the script
 ```
 npm start
 ```
