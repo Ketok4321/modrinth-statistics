@@ -54,12 +54,12 @@ async function gatherLoaderStats() {
     const loaders = (await fetchJson(apiBase + "/v2/tag/loader"))
         .map(loader => loader.name);
 
-    const loaderFacets = loaders.map(loader => [loader, [
+    const facets = loaders.map(loader => [loader, [
         ["project_type:mod"],
         [`categories:${loader}`]
     ]]);
 
-    return await countStats(loaderFacets);
+    return await countStats(facets);
 }
 
 async function gatherVersionStats() {
@@ -68,20 +68,33 @@ async function gatherVersionStats() {
         .map(version => version.version)
         .slice(0, 10);
 
-    const versionFacets = versions.map(version => [version, [
+    const facets = versions.map(version => [version, [
         ["project_type:mod"],
         [`versions:${version}`]
     ]]);
 
-    return await countStats(versionFacets, false);
+    return await countStats(facets, false);
+}
+
+async function gatherLicenseStats() {
+    const licenses = (await fetchJson(apiBase + "/v2/tag/license"))
+        .map(license => license.short);
+
+    const facets = licenses.map(license => [license, [
+        ["project_type:mod"],
+        [`license:${license}`]
+    ]]);
+
+    return await countStats(facets);
 }
 
 start = new Date();
-const [totalMods, loaderStats, versionStats] = await Promise.all([count([["project_type:mod"]]), gatherLoaderStats(), gatherVersionStats()]);
+const [totalMods, loaderStats, versionStats, licenseStats] = await Promise.all([count([["project_type:mod"]]), gatherLoaderStats(), gatherVersionStats(), gatherLicenseStats()]);
 end = new Date();
 
 simpleStat("Total mods", totalMods);
 tableStat("Modloaders", loaderStats);
 tableStat("Versions", versionStats);
+tableStat("Licenses", licenseStats);
 
 console.log(colors.gray(`Gathering statistics took ${(end - start) / 1000}s (${requests} requests)`));
